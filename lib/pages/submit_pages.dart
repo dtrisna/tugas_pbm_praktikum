@@ -19,7 +19,7 @@ class _SubmitScreenState extends State<SubmitScreen> {
 
   bool isLoading = false;
 
-  static const Color primaryColor = Color(0xFFEA580C);
+  static const Color primaryColor = Color(0xFF475569);
   static const Color darkColor = Color(0xFF1F2937);
   static const Color backgroundColor = Color(0xFFF5F5F4);
 
@@ -123,6 +123,7 @@ class _SubmitScreenState extends State<SubmitScreen> {
                   controller: nameController,
                   decoration: const InputDecoration(
                     labelText: "Nama Sparepart",
+
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {

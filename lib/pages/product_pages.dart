@@ -13,7 +13,7 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  static const Color primaryColor = Color(0xFFEA580C);
+  static const Color primaryColor = Color(0xFF475569);
   static const Color darkColor = Color(0xFF1F2937);
   static const Color backgroundColor = Color(0xFFF5F5F4);
 
@@ -207,8 +207,39 @@ class _ProductScreenState extends State<ProductScreen> {
                               price: product.price,
                               description: product.description,
                               onDelete: () async {
-                                final success =
-                                    await apiService.deleteProduct(
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text('Hapus Sparepart?'),
+                                      content: const Text(
+                                        'Data ini akan dihapus dari tampilan katalog kamu.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context, false);
+                                          },
+                                          child: const Text('Batal'),
+                                        ),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,
+                                            foregroundColor: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context, true);
+                                          },
+                                          child: const Text('Hapus'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+
+                                if (confirm != true) return;
+
+                                final success = await apiService.deleteProduct(
                                   product.id,
                                 );
 
@@ -219,17 +250,13 @@ class _ProductScreenState extends State<ProductScreen> {
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text(
-                                        'Sparepart berhasil dihapus',
-                                      ),
+                                      content: Text('Sparepart berhasil dihapus'),
                                     ),
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text(
-                                        'Gagal menghapus sparepart',
-                                      ),
+                                      content: Text('Gagal menghapus sparepart'),
                                     ),
                                   );
                                 }

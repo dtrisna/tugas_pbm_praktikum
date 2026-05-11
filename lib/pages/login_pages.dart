@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
-import 'product_screen.dart';
+import 'product_pages.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,8 +14,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
 
   bool isLoading = false;
+  bool isPasswordHidden = true;
 
-  static const Color primaryColor = Color(0xFFEA580C);
+  static const Color primaryColor = Color(0xFF475569);
   static const Color darkColor = Color(0xFF1F2937);
   static const Color softTextColor = Color(0xFF6B7280);
   static const Color backgroundColor = Color(0xFFF5F5F4);
@@ -83,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(
-                  Icons.car_repair_rounded,
+                  Icons.handyman_rounded,
                   size: 78,
                   color: primaryColor,
                 ),
@@ -91,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 20),
 
                 const Text(
-                  'Garage Parts',
+                  'Raja Spareparts',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -144,12 +145,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       TextField(
                         controller: passwordController,
-                        obscureText: true,
-                        decoration: const InputDecoration(
+                        obscureText: isPasswordHidden,
+                        decoration: InputDecoration(
                           labelText: 'Password / NIM',
-                          prefixIcon: Icon(
+                          prefixIcon: const Icon(
                             Icons.lock_outline,
                             color: primaryColor,
+                          ),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isPasswordHidden = !isPasswordHidden;
+                              });
+                            },
+                            icon: Icon(
+                              isPasswordHidden
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                              color: primaryColor,
+                            ),
                           ),
                         ),
                       ),

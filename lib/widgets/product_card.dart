@@ -14,6 +14,12 @@ class ProductCard extends StatelessWidget {
     required this.onDelete,
   });
 
+  static const Color primaryColor = Color(0xFF475569);
+  static const Color darkColor = Color(0xFF1F2937);
+  static const Color softTextColor = Color(0xFF6B7280);
+  static const Color borderColor = Color(0xFFE7E5E4);
+  static const Color iconBgColor = Color(0xFFE2E8F0);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +28,9 @@ class ProductCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(
+          color: borderColor,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -38,15 +46,18 @@ class ProductCard extends StatelessWidget {
             width: 46,
             height: 46,
             decoration: BoxDecoration(
-              color: const Color(0xFFEFF6FF),
+              color: iconBgColor,
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(
-              Icons.shopping_bag_outlined,
-              color: Color(0xFF2563EB),
+              Icons.build_circle_outlined,
+              color: primaryColor,
+              size: 28,
             ),
           ),
+
           const SizedBox(width: 14),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,33 +67,38 @@ class ProductCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF0F172A),
+                    color: darkColor,
                   ),
                 ),
+
                 const SizedBox(height: 6),
+
                 Text(
                   'Rp $price',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF2563EB),
+                    color: primaryColor,
                   ),
                 ),
+
                 const SizedBox(height: 6),
+
                 Text(
                   description,
                   style: const TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF64748B),
+                    color: softTextColor,
                   ),
                 ),
               ],
             ),
           ),
+
           IconButton(
             onPressed: onDelete,
             icon: const Icon(Icons.delete_outline),
-            color: Colors.red,
+            color: Colors.redAccent,
           ),
         ],
       ),
