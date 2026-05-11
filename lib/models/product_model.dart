@@ -15,7 +15,7 @@ class ProductModel {
     Map<String, dynamic> json,
   ) {
     return ProductModel(
-      id: json['id'] ?? 0,
+      id: int.tryParse(json['id'].toString()) ?? 0,
       name: json['name'] ?? '',
       price: json['price'].toString(),
       description: json['description'] ?? '',

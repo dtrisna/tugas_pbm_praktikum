@@ -111,35 +111,34 @@ class ApiService {
     String github,
   ) async {
     try {
+      String? token = await getToken();
+
       final response = await http.post(
-        Uri.parse('$baseUrl/submit'),
-
+        Uri.parse('$baseUrl/api/products/submit'),
         headers: {
+          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
-
         body: jsonEncode({
           'name': name,
           'price': price,
           'description': description,
-          'github' : github,
+          'github_url': github,
         }),
       );
 
       final data = jsonDecode(response.body);
 
-      if (response.statusCode == 200 ||
-          response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         return {
           "success": true,
-          "message":
-              data["message"] ?? "Submit berhasil",
+          "message": data["message"] ?? "Submit berhasil",
         };
       } else {
         return {
           "success": false,
-          "message":
-              data["message"] ?? "Submit gagal",
+          "message": data["message"] ?? "Submit gagal: ${response.body}",
         };
       }
     } catch (e) {
@@ -148,6 +147,5 @@ class ApiService {
         "message": e.toString(),
       };
     }
-  }
-  
+  } 
 }

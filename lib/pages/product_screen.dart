@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../widgets/product_card.dart';
 import '../models/product_model.dart';
+import 'submit_pages.dart';
+import 'login_pages.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
@@ -11,6 +13,10 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
+  static const Color primaryColor = Color(0xFFEA580C);
+  static const Color darkColor = Color(0xFF1F2937);
+  static const Color backgroundColor = Color(0xFFF5F5F4);
+
   final ApiService apiService = ApiService();
 
   final TextEditingController nameController = TextEditingController();
@@ -97,8 +103,34 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text('Katalog Produk'),
+        backgroundColor: backgroundColor,
+        elevation: 0,
+        title: const Text(
+          'Sparepart Bengkel',
+          style: TextStyle(
+            color: darkColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LoginScreen(),
+                ),
+                (route) => false,
+              );
+            },
+            icon: const Icon(
+              Icons.logout,
+              color: primaryColor,
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -107,34 +139,51 @@ class _ProductScreenState extends State<ProductScreen> {
             TextField(
               controller: nameController,
               decoration: const InputDecoration(
-                labelText: 'Nama Produk',
+                labelText: 'Nama Sparepart',
                 border: OutlineInputBorder(),
               ),
             ),
+
             const SizedBox(height: 12),
 
             TextField(
               controller: priceController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                labelText: 'Harga Produk',
+                labelText: 'Harga Sparepart',
                 border: OutlineInputBorder(),
               ),
             ),
+
             const SizedBox(height: 12),
 
             TextField(
               controller: descriptionController,
               decoration: const InputDecoration(
-                labelText: 'Deskripsi Produk',
+                labelText: 'Deskripsi Sparepart',
                 border: OutlineInputBorder(),
               ),
             ),
+
             const SizedBox(height: 12),
 
-            ElevatedButton(
-              onPressed: addProduct,
-              child: const Text('Tambah Produk'),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                onPressed: addProduct,
+                icon: const Icon(Icons.add),
+                label: const Text('Tambah Sparepart'),
+              ),
             ),
 
             const SizedBox(height: 20),
@@ -146,17 +195,18 @@ class _ProductScreenState extends State<ProductScreen> {
                     )
                   : products.isEmpty
                       ? const Center(
-                          child: Text('Belum ada produk'),
+                          child: Text('Belum ada sparepart'),
                         )
                       : ListView.builder(
                           itemCount: products.length,
                           itemBuilder: (context, index) {
                             final product = products[index];
 
-                            return Dismissible(
-                              key: Key(product.id.toString()),
-
-                              onDismissed: (direction) async {
+                            return ProductCard(
+                              name: product.name,
+                              price: product.price,
+                              description: product.description,
+                              onDelete: () async {
                                 final success =
                                     await apiService.deleteProduct(
                                   product.id,
@@ -167,81 +217,60 @@ class _ProductScreenState extends State<ProductScreen> {
                                     products.removeAt(index);
                                   });
 
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
-                                        'Produk berhasil dihapus',
+                                        'Sparepart berhasil dihapus',
                                       ),
                                     ),
                                   );
                                 } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
-                                        'Gagal menghapus produk',
+                                        'Gagal menghapus sparepart',
                                       ),
                                     ),
                                   );
                                 }
                               },
-
-                              background: Container(
-                                color: Colors.red,
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.only(
-                                  right: 20,
-                                ),
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.white,
-                                ),
-                              ),
-
-                              child: ProductCard(
-                                name: product.name,
-                                price: product.price,
-                                description:
-                                    product.description,
-
-                                onDelete: () async {
-                                  final success =
-                                      await apiService
-                                          .deleteProduct(
-                                    product.id,
-                                  );
-
-                                  if (success) {
-                                    setState(() {
-                                      products.removeAt(index);
-                                    });
-
-                                    ScaffoldMessenger.of(
-                                      context,
-                                    ).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Produk berhasil dihapus',
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    ScaffoldMessenger.of(
-                                      context,
-                                    ).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Gagal menghapus produk',
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
                             );
                           },
                         ),
+            ),
+
+            const SizedBox(height: 16),
+
+            Align(
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 14,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SubmitScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.upload, size: 18),
+                label: const Text(
+                  'Submit',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
